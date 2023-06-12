@@ -20,7 +20,7 @@ from adecty_design.properties.colors import Colors
 
 colors = Colors(
     background='#333',
-    background_secondary='#ebebeb',
+    background_secondary='#545454',
     negative='#ed7474',
     positive='#57a752',
     primary='#d0a95d',

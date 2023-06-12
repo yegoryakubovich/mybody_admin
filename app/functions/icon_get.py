@@ -17,6 +17,8 @@
 
 from adecty_design.widgets.icon import Icon
 
+from app.database import Language, Translate
+
 
 def icon_get(filename: str) -> Icon:
     return Icon(
@@ -24,3 +26,9 @@ def icon_get(filename: str) -> Icon:
             filename=filename,
         ),
     )
+
+
+def create_default_translation(text, value):
+    russian_language = Language.get(name='Русский')
+    translate = Translate.create(language=russian_language, text=text, value=value)
+    translate.save()

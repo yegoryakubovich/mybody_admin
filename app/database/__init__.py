@@ -16,11 +16,17 @@
 
 
 from app.database.db_manager import db_manager
-from app.database.models import db, Admin
-
+from app.database.models import db, Admin, Language, Text, Translate, Account, Item, Article, ArticleItem
 
 models = [
+    Language,
+    Account,
     Admin,
+    Text,
+    Translate,
+    Item,
+    Article,
+    ArticleItem
 ]
 
 

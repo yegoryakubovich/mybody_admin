@@ -20,7 +20,7 @@ from flask import request, redirect
 from adecty_api_client.adecty_api_client import AdectyApiClient
 from adecty_api_client.adecty_api_client_error import AdectyApiClientError
 
-from app.database.models import Admin
+from app.database.models import Admin, Account
 from config import URL_APP, URL_APP_ADMIN
 
 
@@ -42,7 +42,11 @@ def admin_get(not_return: bool = False):
                 return redirect(location=ACCOUNT_SESSION_TOKEN_GET_URL)
 
             account_id = adecty_api_client.account.get(account_session_token)['account_id']
-            admin = Admin.get_or_none(Admin.account_id == account_id)
+            account = Account.get_or_none(Account.adecty_account_id == account_id)
+            if not account:
+                return redirect(location=URL_APP)
+
+            admin = Admin.get_or_none(Admin.account == account)
             if not admin:
                 return redirect(location=URL_APP)
 

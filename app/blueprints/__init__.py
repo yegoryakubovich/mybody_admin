@@ -15,17 +15,29 @@
 #
 
 
-from flask import Blueprint
+from flask import Blueprint, redirect
 
 from app.blueprints.account import blueprint_account
+from app.blueprints.articles import blueprint_articles
 from app.blueprints.errors import blueprint_errors
-from app.blueprints.texts import blueprint_texts
+from app.blueprints.languages import blueprint_languages
+from app.blueprints.items import blueprint_items
+from app.decorators.admin_get import admin_get
 
 
 blueprint_main = Blueprint(
     name='blueprint_account',
     import_name=__name__,
 )
+
+
 blueprint_main.register_blueprint(blueprint=blueprint_errors)
 blueprint_main.register_blueprint(blueprint=blueprint_account)
-blueprint_main.register_blueprint(blueprint=blueprint_texts)
+blueprint_main.register_blueprint(blueprint=blueprint_items)
+blueprint_main.register_blueprint(blueprint=blueprint_languages)
+
+
+@blueprint_main.route('/', methods=['GET'])
+@admin_get(not_return=True)
+def main():
+    return redirect('/items')
