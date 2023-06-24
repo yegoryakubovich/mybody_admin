@@ -28,9 +28,21 @@ navigation_main = Navigation(
             icon=icon_get(filename='items.svg'),
         ),
         NavigationItem(
-            id='article',
+            id='articles',
             name='Статьи',
             url='/articles',
+            icon=icon_get(filename='items.svg'),
+        ),
+        NavigationItem(
+            id='parameters',
+            name='Анкета',
+            url='/parameters',
+            icon=icon_get(filename='items.svg'),
+        ),
+        NavigationItem(
+            id='tags',
+            name='Теги',
+            url='/tags',
             icon=icon_get(filename='items.svg'),
         )
     ],

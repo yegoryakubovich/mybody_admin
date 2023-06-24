@@ -16,7 +16,8 @@
 
 
 from app.database.db_manager import db_manager
-from app.database.models import db, Admin, Language, Text, Translate, Account, Item, Article, ArticleItem
+from app.database.models import db, Admin, Language, Text, Translate, Account, Item, Article, ArticleItem, Parameter, \
+    AccountParameter, TagParameter
 
 models = [
     Language,
@@ -25,8 +26,11 @@ models = [
     Text,
     Translate,
     Item,
+    TagParameter,
     Article,
-    ArticleItem
+    ArticleItem,
+    Parameter,
+    AccountParameter
 ]
 
 

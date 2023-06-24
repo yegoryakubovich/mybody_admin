@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 from adecty_design.properties import Font, Margin
-from adecty_design.widgets import Text, InputButton, Button, ButtonType, Form, InputSelect, InputText
+from adecty_design.widgets import Text, InputButton, Button, ButtonType, Form, InputText
 from flask import Blueprint, request, redirect
 
 from app.adecty_design.interface import interface
@@ -68,38 +68,32 @@ def articles_page():
 @blueprint_articles.route('/create', methods=['GET', 'POST'])
 def create_article():
     if request.method == 'POST':
-        # Получаем данные из формы
         name = request.form.get('name')
         text = request.form.get('text')
         header = request.form.get('header')
-        subheader_text = request.form.get('subheader_text')
+        subtitle_text = request.form.get('subtitle_text')
         headers = request.form.get('headers')
         resource_link = request.form.get('resource_link')
 
-        # Создаем текст статьи
         article_text = TextDB()
         article_text.save()
 
-        # Создаем статью в базе данных
         new_article = Article(name=article_text)
         new_article.save()
 
-        # Создаем элементы статьи и устанавливаем связь с созданной статьей
         article_items = []
-        for i, header in enumerate([header, text, subheader_text, headers, resource_link], start=1):
+        for i, header in enumerate([header, text, subtitle_text, headers, resource_link], start=1):
             article_item = ArticleItem(article=new_article, path=i)
             article_item.save()
             article_items.append(article_item)
 
-        # Сохраняем тексты в базе данных
         translate_entries = [
             create_default_translation(article_text, value)
-            for value in [name, text, header, subheader_text, headers, resource_link]
+            for value in [name, text, header, subtitle_text, headers, resource_link]
         ]
 
         return redirect('/')
 
-    # Отображаем форму создания статьи
     widgets = [
         Text(
             text='Создание статьи',

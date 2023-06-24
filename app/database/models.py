@@ -15,7 +15,8 @@
 #
 
 
-from peewee import Model, PrimaryKeyField, MySQLDatabase, IntegerField, ForeignKeyField, CharField, BigIntegerField
+from peewee import Model, PrimaryKeyField, MySQLDatabase, IntegerField, ForeignKeyField, CharField, BigIntegerField, \
+    DateTimeField
 
 from config import MYSQL_NAME, MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, SETTINGS_TEXT_404
 
@@ -74,8 +75,25 @@ class Admin(BaseModel):
 class Text(BaseModel):
     id = PrimaryKeyField()
 
+    def default_create(self, value: str):
+        translate = Translate(language=Language.get(Language.id == 2), text=self, value=value)
+        translate.save()
+
+    def value_get(self, account: Account):
+        translate = Translate.get_or_none((Translate.language == account.language) & (Translate.text == self))
+        if not translate:
+            translate = Translate.get(Translate.text == self)
+        return translate.value
+
+    def value_set(self, account: Account, value: str):
+        translate = Translate.get_or_none((Translate.language == account.language) & (Translate.text == self))
+        if not translate:
+            translate = Translate(language=account.language, text=self)
+        translate.value = value
+        translate.save()
+
     class Meta:
-        db_table = 'items'
+        db_table = 'texts'
 
 
 class Translate(BaseModel):
@@ -114,3 +132,52 @@ class ArticleItem(BaseModel):
 
     class Meta:
         db_table = 'articles_items'
+
+
+class TagParameter(BaseModel):
+    id = PrimaryKeyField()
+    name = ForeignKeyField(Text, to_field='id', on_delete='cascade')
+
+    def get_by_name(self, account: Account, name: str):
+        for tag_parameter in TagParameter.select():
+            print(f"name: {name}")
+            print(f"account.language: {account.language}")
+            print(f"tag_parameter.name: {tag_parameter.name}")
+
+            translate = Translate.get_or_none((Translate.value == name) & (Translate.language == account.language) &
+                                              (Translate.text == tag_parameter.name))
+            print(translate)
+            if translate:
+                return tag_parameter
+            print(tag_parameter)
+
+    def name_get(self, account: Account):
+        translate = Translate.get_or_none((Translate.language == account.language) & (Translate.text == self.name))
+        if not translate:
+            translate = Translate.get(Translate.text == self.name)
+        return translate.value
+
+    class Meta:
+        db_table = 'tags_parameters'
+
+
+class Parameter(BaseModel):
+    id = PrimaryKeyField()
+    key_parameter = CharField(max_length=128)
+    tag = ForeignKeyField(TagParameter, to_field='id')
+    text = ForeignKeyField(Text, to_field='id')
+    is_gender = CharField(null=True)
+
+    class Meta:
+        db_table = 'parameters'
+
+
+class AccountParameter(BaseModel):
+    id = PrimaryKeyField()
+    account = ForeignKeyField(Account, to_field='id')
+    parameter = ForeignKeyField(Parameter, to_field='id', on_delete='cascade')
+    value = CharField(max_length=1024)
+    datetime = DateTimeField()
+
+    class Meta:
+        db_table = 'accounts_parameters'
