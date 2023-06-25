@@ -100,13 +100,13 @@ def parameters(admin: Admin):
 @admin_get()
 def parameters_create(admin: Admin):
     if request.method == 'POST':
+        print(request.form)
         key_parameter = request.form.get('key_parameter')
         is_gender = request.form.get('is_gender')
         text_value = request.form.get('text_value')
-        tag_id = request.form.get('tag_id')
-
-        tag_parameter = TagParameter()
-        tag = tag_parameter.get_by_name(admin.account, tag_id)
+        tag_name = request.form.get('tag_name')
+        print(tag_name)
+        tag_parameter = TagParameter().get_by_name(name=tag_name, account=admin.account)
 
         text = TextDB()
         text.save()
@@ -119,7 +119,7 @@ def parameters_create(admin: Admin):
         else:
             is_gender = None
 
-        parameter = Parameter(text=text, is_gender=is_gender, key_parameter=key_parameter, tag=tag)
+        parameter = Parameter(text=text, is_gender=is_gender, key_parameter=key_parameter, tag=tag_parameter)
         parameter.save()
 
         return redirect('/parameters')
@@ -188,7 +188,7 @@ def parameters_create(admin: Admin):
                             weight=700,
                         ),
                     ),
-                    InputSelect(id='tag_id', options=options_tag),
+                    InputSelect(id='tag_name', options=options_tag),
                     InputButton(text='Сохранить', margin=Margin(horizontal=8)),
                 ],
             ),
@@ -199,5 +199,3 @@ def parameters_create(admin: Admin):
         active='parameters',
     )
     return interface_html
-
-

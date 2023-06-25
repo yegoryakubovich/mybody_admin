@@ -108,6 +108,14 @@ class Translate(BaseModel):
     text = ForeignKeyField(Text, to_field='id')
     value = CharField()
 
+    def get_by_value(self, account: Account, value: str, text: Text):
+        translate = Translate.get_or_none((Translate.value == value) & (Translate.language == account.language) &
+                                          (Translate.text == text))
+
+        if not translate:
+            translate = Translate.get_or_none((Translate.value == value) & (Translate.text == text))
+        return translate
+
     class Meta:
         db_table = 'translates'
 
@@ -146,16 +154,10 @@ class TagParameter(BaseModel):
 
     def get_by_name(self, account: Account, name: str):
         for tag_parameter in TagParameter.select():
-            print(f"name: {name}")
-            print(f"account.language: {account.language}")
-            print(f"tag_parameter.name: {tag_parameter.name}")
-
-            translate = Translate.get_or_none((Translate.value == name) & (Translate.language == account.language) &
-                                              (Translate.text == tag_parameter.name))
-            print(translate)
+            translate = Translate().get_by_value(account=account, value=name, text=tag_parameter.name)
+            print(tag_parameter, translate)
             if translate:
                 return tag_parameter
-            print(tag_parameter)
 
     def name_get(self, account: Account):
         translate = Translate.get_or_none((Translate.language == account.language) & (Translate.text == self.name))

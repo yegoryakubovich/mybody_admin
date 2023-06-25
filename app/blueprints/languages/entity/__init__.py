@@ -67,6 +67,7 @@ def language_update(language_id):
     ]
     interface_html = interface.html_get(
         widgets=widgets,
-        active='items',
+        active='languages',
     )
+
     return interface_html

@@ -91,8 +91,9 @@ def languages_get():
     ]
     interface_html = interface.html_get(
         widgets=widgets,
-        active='items',
+        active='languages',
     )
+
     return interface_html
 
 
@@ -152,7 +153,7 @@ def languages_create():
 
     interface_html = interface.html_get(
         widgets=widgets,
-        active='items',
+        active='languages',
     )
 
     return interface_html
