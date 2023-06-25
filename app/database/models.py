@@ -48,6 +48,12 @@ class Account(BaseModel):
     id = PrimaryKeyField()
     adecty_account_id = IntegerField()
     language = ForeignKeyField(Language, to_field='id')
+    first_name = CharField()
+    last_name = CharField()
+    middle_name = CharField(null=True)
+    gender = CharField()
+    telegram = CharField(null=True)
+    timezone = CharField()
 
     def text_get(self, key):
         text = Text.get_or_none(Text.key == key)
@@ -98,8 +104,8 @@ class Text(BaseModel):
 
 class Translate(BaseModel):
     id = PrimaryKeyField()
-    language = ForeignKeyField(Language, backref='translates')
-    text = ForeignKeyField(Text, backref='translates')
+    language = ForeignKeyField(Language, to_field='id')
+    text = ForeignKeyField(Text, to_field='id')
     value = CharField()
 
     class Meta:

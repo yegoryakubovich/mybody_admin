@@ -90,5 +90,8 @@ def tag_edit(admin: Admin, tag_id: int):
         ),
     ]
 
-    interface_html = interface.html_get(widgets=widgets)
+    interface_html = interface.html_get(
+        widgets=widgets,
+        active='tags',
+    )
     return interface_html

@@ -91,7 +91,7 @@ def parameters(admin: Admin):
 
     interface_html = interface.html_get(
         widgets=widgets,
-        active='article',
+        active='parameters',
     )
     return interface_html
 
@@ -125,58 +125,78 @@ def parameters_create(admin: Admin):
         return redirect('/parameters')
 
     options_gender = ['Оба', 'Мужской', 'Женский']
-    options_tag = [tag.name_get(account=admin.account) for tag in TagParameter.select()]
-    widgets = [
-        Text(
-            text='Создание вопроса',
-            font=Font(
-                size=32,
-                weight=700,
+    tag_parameters = TagParameter.select()
+    options_tag = [tag.name_get(account=admin.account) for tag in tag_parameters]
+
+    if not options_tag:
+        widgets = [
+            Text(
+                text='Для начала необходимо создать тег',
+                font=Font(
+                    size=16,
+                    weight=700,
+                ),
+                margin=Margin(down=16),
             ),
-            margin=Margin(down=16),
-        ),
-        Form(
-            widgets=[
-                Text(
-                    text='Ключ',
-                    font=Font(
-                        size=14,
-                        weight=700,
-                    ),
+            Button(
+                type=ButtonType.default,
+                text='Создать тег',
+                url='/tags/create',
+                margin=Margin(down=8),
+            ),
+        ]
+    else:
+        widgets = [
+            Text(
+                text='Создание вопроса',
+                font=Font(
+                    size=32,
+                    weight=700,
                 ),
-                InputText(id='key_parameter'),
-                Text(
-                    text='Текст',
-                    font=Font(
-                        size=14,
-                        weight=700,
+                margin=Margin(down=16),
+            ),
+            Form(
+                widgets=[
+                    Text(
+                        text='Ключ',
+                        font=Font(
+                            size=14,
+                            weight=700,
+                        ),
                     ),
-                ),
-                InputText(id='text_value'),
-                Text(
-                    text='Пол',
-                    font=Font(
-                        size=14,
-                        weight=700,
+                    InputText(id='key_parameter'),
+                    Text(
+                        text='Текст',
+                        font=Font(
+                            size=14,
+                            weight=700,
+                        ),
                     ),
-                ),
-                InputSelect(id='is_gender', options=options_gender),
-                Text(
-                    text='Тег',
-                    font=Font(
-                        size=14,
-                        weight=700,
+                    InputText(id='text_value'),
+                    Text(
+                        text='Пол',
+                        font=Font(
+                            size=14,
+                            weight=700,
+                        ),
                     ),
-                ),
-                InputSelect(id='tag_id', options=options_tag),
-                InputButton(text='Сохранить', margin=Margin(horizontal=8)),
-            ],
-        ),
-    ]
+                    InputSelect(id='is_gender', options=options_gender),
+                    Text(
+                        text='Тег',
+                        font=Font(
+                            size=14,
+                            weight=700,
+                        ),
+                    ),
+                    InputSelect(id='tag_id', options=options_tag),
+                    InputButton(text='Сохранить', margin=Margin(horizontal=8)),
+                ],
+            ),
+        ]
 
     interface_html = interface.html_get(
         widgets=widgets,
-        active='article',
+        active='parameters',
     )
     return interface_html
 

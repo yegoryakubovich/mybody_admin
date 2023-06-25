@@ -44,6 +44,12 @@ navigation_main = Navigation(
             name='Теги',
             url='/tags',
             icon=icon_get(filename='items.svg'),
+        ),
+        NavigationItem(
+            id='languages',
+            name='Языки',
+            url='/languages',
+            icon=icon_get(filename='items.svg'),
         )
     ],
 )

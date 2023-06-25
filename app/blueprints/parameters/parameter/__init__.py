@@ -119,5 +119,8 @@ def parameter_edit(admin: Admin, parameter_id: int):
         ),
     ]
 
-    interface_html = interface.html_get(widgets=widgets)
+    interface_html = interface.html_get(
+        widgets=widgets,
+        active='parameters',
+    )
     return interface_html

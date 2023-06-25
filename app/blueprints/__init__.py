@@ -18,6 +18,7 @@
 from flask import Blueprint, redirect
 
 from app.blueprints.account import blueprint_account
+from app.blueprints.articles import blueprint_articles
 from app.blueprints.errors import blueprint_errors
 from app.blueprints.languages import blueprint_languages
 from app.blueprints.items import blueprint_items
@@ -34,6 +35,7 @@ blueprint_main = Blueprint(
 
 blueprint_main.register_blueprint(blueprint=blueprint_errors)
 blueprint_main.register_blueprint(blueprint=blueprint_account)
+blueprint_main.register_blueprint(blueprint=blueprint_articles)
 blueprint_main.register_blueprint(blueprint=blueprint_items)
 blueprint_main.register_blueprint(blueprint=blueprint_languages)
 blueprint_main.register_blueprint(blueprint=blueprint_parameters)

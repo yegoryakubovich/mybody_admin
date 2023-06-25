@@ -90,7 +90,7 @@ def tags(admin: Admin):
 
     interface_html = interface.html_get(
         widgets=widgets,
-        active='article',
+        active='tags',
     )
     return interface_html
 
@@ -136,6 +136,6 @@ def tags_create():
 
     interface_html = interface.html_get(
         widgets=widgets,
-        active='article',
+        active='tags',
     )
     return interface_html
