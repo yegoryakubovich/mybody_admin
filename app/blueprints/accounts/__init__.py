@@ -20,6 +20,9 @@ from flask import Blueprint
 from app.adecty_design.interface import interface
 from adecty_design.properties import Font, Margin, Align, AlignType
 from adecty_design.widgets import Text, Button, ButtonType, Card, View, ViewType
+
+from app.blueprints.accounts.foods_cards import blueprint_foods_cards
+from app.blueprints.accounts.trainings_cards import blueprint_trainings_cards
 from app.database.models import Account, AccountParameter
 from app.decorators.admin_get import admin_get
 
@@ -29,6 +32,9 @@ blueprint_accounts = Blueprint(
     import_name=__name__,
     url_prefix='/accounts'
 )
+
+blueprint_accounts.register_blueprint(blueprint=blueprint_trainings_cards)
+blueprint_accounts.register_blueprint(blueprint=blueprint_foods_cards)
 
 
 @blueprint_accounts.route(rule='/', endpoint='get', methods=['GET'])
@@ -110,12 +116,24 @@ def account_edit(account_id):
             text='Получить информацию об аккаунте',
             margin=Margin(horizontal=8, right=6),
             url=f'/accounts/{account.id}/info',
+        ),
+        Button(
+            type=ButtonType.chip,
+            text='Получить информацию по карте тренировок',
+            margin=Margin(horizontal=8, right=6),
+            url=f'/accounts/{account.id}/trainings_cards',
+        ),
+        Button(
+            type=ButtonType.chip,
+            text='Получить информацию по карте питания',
+            margin=Margin(horizontal=8, right=6),
+            url=f'/accounts/{account.id}/foods_cards',
         )
     ]
 
     interface_html = interface.html_get(
         widgets=widgets,
-        active='edit_account',
+        active='accounts',
     )
     return interface_html
 
@@ -154,27 +172,38 @@ def info_get(account_id):
                      font=Font(size=16))
             ]
         ),
-        Card(
+        Text(
+            text='Анкета',
+            font=Font(
+                size=32,
+                weight=700,
+            ),
             margin=Margin(down=16),
-            widgets=[
-                Text(text="Анкета", font=Font(size=20))
-            ]
-        )
+        ),
     ]
 
     parameters = AccountParameter.select().where(AccountParameter.account == account)
 
-    for parameter in parameters:
-        parameter_widget = Card(
+    if parameters:
+        for parameter in parameters:
+            parameter_widget = Card(
+                margin=Margin(down=16),
+                widgets=[
+                    Text(text=f"{parameter.value_get(account)}: {parameter.value}", font=Font(size=16))
+                ]
+            )
+            widgets.append(parameter_widget)
+    else:
+        no_parameters_widget = Card(
             margin=Margin(down=16),
             widgets=[
-                Text(text=f"{parameter.parameter.name}: {parameter.value}", font=Font(size=16))
+                Text(text="Нет отвеченных вопросов на анкету", font=Font(size=16))
             ]
         )
-        widgets.append(parameter_widget)
+        widgets.append(no_parameters_widget)
 
     interface_html = interface.html_get(
         widgets=widgets,
-        active='info',
+        active='accounts',
     )
     return interface_html

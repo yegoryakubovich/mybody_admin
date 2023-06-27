@@ -62,10 +62,12 @@ def articles_get(admin: Admin):
 
     for article in Article.select():
         article_text = article.name.value_get(admin.account)
+        status_text = 'Отображается' if article.status else 'Не отображается'
         new_widget = Card(
             margin=Margin(down=16),
             widgets=[
                 Text(text=f"Название статьи: {article_text}", font=Font(size=16)),
+                Text(text=f"Статус: {status_text}", font=Font(size=14)),
                 View(
                     type=ViewType.horizontal,
                     widgets=[
@@ -80,6 +82,12 @@ def articles_get(admin: Admin):
                             text='Удалить',
                             margin=Margin(horizontal=8, right=6),
                             url=f'/articles/{article.id}/delete',
+                        ),
+                        Button(
+                            type=ButtonType.chip,
+                            text='Изминить статус',
+                            margin=Margin(horizontal=8, right=6),
+                            url=f'/articles/{article.id}/status_update',
                         ),
                     ],
                 ),
@@ -142,3 +150,13 @@ def articles_create():
     )
 
     return interface_html
+
+
+@blueprint_articles.route('/<int:article_id>/status_update', methods=['GET', 'POST'])
+@admin_get(not_return=True)
+def article_status_update(article_id):
+    article = Article.get_or_none(Article.id == article_id)
+    if article:
+        article.status = not article.status
+        article.save()
+    return redirect('/articles')

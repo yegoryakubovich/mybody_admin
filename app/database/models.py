@@ -16,7 +16,7 @@
 
 
 from peewee import Model, PrimaryKeyField, MySQLDatabase, IntegerField, ForeignKeyField, CharField, BigIntegerField, \
-    DateTimeField
+    DateTimeField, BooleanField
 
 from config import MYSQL_NAME, MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, SETTINGS_TEXT_404
 
@@ -132,6 +132,7 @@ class Item(BaseModel):
 class Article(BaseModel):
     id = PrimaryKeyField()
     name = ForeignKeyField(Text, to_field='id')
+    status = BooleanField(default=False)
 
     class Meta:
         db_table = 'articles'
@@ -155,7 +156,6 @@ class TagParameter(BaseModel):
     def get_by_name(self, account: Account, name: str):
         for tag_parameter in TagParameter.select():
             translate = Translate().get_by_value(account=account, value=name, text=tag_parameter.name)
-            print(tag_parameter, translate)
             if translate:
                 return tag_parameter
 
@@ -187,5 +187,55 @@ class AccountParameter(BaseModel):
     value = CharField(max_length=1024)
     datetime = DateTimeField()
 
+    def value_get(self, account: Account):
+        parameter_text = self.parameter.text
+        translate = Translate.get_or_none(
+            (Translate.language == account.language) & (Translate.text == parameter_text))
+        if not translate:
+            translate = Translate.get(Translate.text == parameter_text)
+        return translate.value
+
     class Meta:
         db_table = 'accounts_parameters'
+
+
+class ReportEating(BaseModel):
+    id = PrimaryKeyField()
+    account = ForeignKeyField(Account, to_field='id')
+    value = CharField(max_length=1024)
+    datetime = DateTimeField()
+
+    class Meta:
+        db_table = 'report_seatings'
+
+
+class ReportTraining(BaseModel):
+    id = PrimaryKeyField()
+    account = ForeignKeyField(Account, to_field='id')
+    value = CharField(max_length=1024)
+    datetime = DateTimeField()
+
+    class Meta:
+        db_table = 'reports_trainings'
+
+
+class OrderTraining(BaseModel):
+    id = PrimaryKeyField()
+    account = ForeignKeyField(Account, to_field='id')
+    name = CharField()
+    unit = CharField()
+    article = ForeignKeyField(Article, to_field='id')
+
+    class Meta:
+        db_table = 'orders_trainings'
+
+
+class OrderEating(BaseModel):
+    id = PrimaryKeyField()
+    account = ForeignKeyField(Account, to_field='id')
+    name = CharField()
+    unit = CharField()
+    article = ForeignKeyField(Article, to_field='id')
+
+    class Meta:
+        db_table = 'orders_eatings'
