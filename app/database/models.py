@@ -134,6 +134,18 @@ class Article(BaseModel):
     name = ForeignKeyField(Text, to_field='id')
     status = BooleanField(default=False)
 
+    def article_name_get(self, account: Account):
+        translate = Translate.get_or_none((Translate.language == account.language) & (Translate.text == self.name))
+        if not translate:
+            translate = Translate.get(Translate.text == self.name)
+        return translate.value
+
+    def get_by_aricle(self, account: Account, name: str):
+        for name_article in Article.select():
+            translate = Translate().get_by_value(account=account, value=name, text=name_article.name)
+            if translate:
+                return name_article
+
     class Meta:
         db_table = 'articles'
 
@@ -230,12 +242,52 @@ class OrderTraining(BaseModel):
         db_table = 'orders_trainings'
 
 
+class TimeFood(BaseModel):
+    id = PrimaryKeyField()
+    name = ForeignKeyField(Text, to_field='id')
+
+    def food_name_get(self, account: Account):
+        translate = Translate.get_or_none((Translate.language == account.language) & (Translate.text == self.name))
+        if not translate:
+            translate = Translate.get(Translate.text == self.name)
+        return translate.value
+
+    def get_by_food(self, account: Account, name: str):
+        for time_food in TimeFood.select():
+            translate = Translate().get_by_value(account=account, value=name, text=time_food.name)
+            if translate:
+                return time_food
+
+    class Meta:
+        db_table = 'times_foods'
+
+
 class OrderEating(BaseModel):
     id = PrimaryKeyField()
     account = ForeignKeyField(Account, to_field='id')
-    name = CharField()
+    time_food = ForeignKeyField(TimeFood, to_field='id')
+    name = ForeignKeyField(Text, to_field='id')
     unit = CharField()
     article = ForeignKeyField(Article, to_field='id')
+    datetime = DateTimeField()
 
     class Meta:
         db_table = 'orders_eatings'
+
+
+class Product(BaseModel):
+    id = PrimaryKeyField()
+    name = ForeignKeyField(Text, to_field='id')
+
+    def product_name_get(self, account: Account):
+        translate = Translate.get_or_none((Translate.language == account.language) & (Translate.text == self.name))
+        if not translate:
+            translate = Translate.get(Translate.text == self.name)
+        return translate.value
+
+    class Meta:
+        db_table = 'products'
+
+
+
+

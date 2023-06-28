@@ -34,9 +34,21 @@ navigation_main = Navigation(
             icon=icon_get(filename='items.svg'),
         ),
         NavigationItem(
+            id='products',
+            name='Продукты',
+            url='/products',
+            icon=icon_get(filename='items.svg'),
+        ),
+        NavigationItem(
             id='articles',
             name='Статьи',
             url='/articles',
+            icon=icon_get(filename='items.svg'),
+        ),
+        NavigationItem(
+            id='times_foods',
+            name='Приёмы пищи',
+            url='/times_foods',
             icon=icon_get(filename='items.svg'),
         ),
         NavigationItem(

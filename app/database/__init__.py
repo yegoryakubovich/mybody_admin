@@ -17,7 +17,7 @@
 
 from app.database.db_manager import db_manager
 from app.database.models import db, Admin, Language, Text, Translate, Account, Item, Article, ArticleItem, Parameter, \
-    AccountParameter, TagParameter, ReportEating, ReportTraining, OrderTraining, OrderEating
+    AccountParameter, TagParameter, ReportEating, ReportTraining, OrderTraining, OrderEating, Product, TimeFood
 
 models = [
     Language,
@@ -34,7 +34,9 @@ models = [
     ReportEating,
     ReportTraining,
     OrderTraining,
-    OrderEating
+    OrderEating,
+    Product,
+    TimeFood
 ]
 
 

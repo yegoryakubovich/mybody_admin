@@ -100,12 +100,10 @@ def parameters(admin: Admin):
 @admin_get()
 def parameters_create(admin: Admin):
     if request.method == 'POST':
-        print(request.form)
         key_parameter = request.form.get('key_parameter')
         is_gender = request.form.get('is_gender')
         text_value = request.form.get('text_value')
         tag_name = request.form.get('tag_name')
-        print(tag_name)
         tag_parameter = TagParameter().get_by_name(name=tag_name, account=admin.account)
 
         text = TextDB()

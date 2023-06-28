@@ -24,7 +24,9 @@ from app.blueprints.errors import blueprint_errors
 from app.blueprints.languages import blueprint_languages
 from app.blueprints.items import blueprint_items
 from app.blueprints.parameters import blueprint_parameters
+from app.blueprints.products import blueprint_products
 from app.blueprints.tags import blueprint_tags
+from app.blueprints.times_foods import blueprint_times_foods
 from app.decorators.admin_get import admin_get
 
 
@@ -42,6 +44,8 @@ blueprint_main.register_blueprint(blueprint=blueprint_languages)
 blueprint_main.register_blueprint(blueprint=blueprint_parameters)
 blueprint_main.register_blueprint(blueprint=blueprint_tags)
 blueprint_main.register_blueprint(blueprint=blueprint_accounts)
+blueprint_main.register_blueprint(blueprint=blueprint_products)
+blueprint_main.register_blueprint(blueprint=blueprint_times_foods)
 
 
 @blueprint_main.route('/', methods=['GET'])
