@@ -262,22 +262,10 @@ class TimeFood(BaseModel):
         db_table = 'times_foods'
 
 
-class OrderEating(BaseModel):
-    id = PrimaryKeyField()
-    account = ForeignKeyField(Account, to_field='id')
-    time_food = ForeignKeyField(TimeFood, to_field='id')
-    name = ForeignKeyField(Text, to_field='id')
-    unit = CharField()
-    article = ForeignKeyField(Article, to_field='id')
-    datetime = DateTimeField()
-
-    class Meta:
-        db_table = 'orders_eatings'
-
-
 class Product(BaseModel):
     id = PrimaryKeyField()
     name = ForeignKeyField(Text, to_field='id')
+    article = ForeignKeyField(Article, to_field='id')
 
     def product_name_get(self, account: Account):
         translate = Translate.get_or_none((Translate.language == account.language) & (Translate.text == self.name))
@@ -285,9 +273,22 @@ class Product(BaseModel):
             translate = Translate.get(Translate.text == self.name)
         return translate.value
 
+    def get_by_product(self, account: Account, name: str):
+        for product in Product.select():
+            translate = Translate().get_by_value(account=account, value=name, text=product.name)
+            if translate:
+                return product
     class Meta:
         db_table = 'products'
 
 
+class OrderEating(BaseModel):
+    id = PrimaryKeyField()
+    account = ForeignKeyField(Account, to_field='id')
+    time_food = ForeignKeyField(TimeFood, to_field='id')
+    name = ForeignKeyField(Product, to_field='id')
+    unit = CharField()
+    datetime = DateTimeField()
 
-
+    class Meta:
+        db_table = 'orders_eatings'

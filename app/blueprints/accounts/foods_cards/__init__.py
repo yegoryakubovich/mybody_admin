@@ -13,8 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-
+from collections import defaultdict
 from datetime import datetime, timedelta
 
 from adecty_design.widgets.input import InputCheckbox
@@ -24,9 +23,8 @@ from app.adecty_design.interface import interface
 from adecty_design.properties import Font, Margin, Align, AlignType
 from adecty_design.widgets import Text, Button, ButtonType, Card, View, ViewType, Form, InputSelect, InputText, \
     InputButton
-from app.database.models import OrderEating, Product, Article, Account, Admin, TimeFood
+from app.database.models import OrderEating, Product, Account, Admin, TimeFood
 from app.decorators.admin_get import admin_get
-from app.database import Text as TextDB
 
 
 blueprint_foods_cards = Blueprint(
@@ -37,10 +35,14 @@ blueprint_foods_cards = Blueprint(
 
 
 @blueprint_foods_cards.route(rule='/', endpoint='get', methods=['GET'])
-@admin_get(not_return=True)
-def foods_get(account_id):
-    today = datetime.now().strftime("%Y-%m-%d")
-    foods = OrderEating.select().where(OrderEating.datetime.startswith(today))
+@admin_get()
+def foods_get(account_id, admin: Admin):
+    foods = OrderEating.select().where(OrderEating.datetime)
+    account = Account.get_by_id(admin.account_id)
+    foods_by_date = defaultdict(list)
+    for food in foods:
+        foods_by_date[food.datetime.date()].append(food)
+
     widgets = [
         View(
             properties_additional=[Align(type=AlignType.space_between)],
@@ -63,48 +65,46 @@ def foods_get(account_id):
         )
     ]
 
-    buttons_view = None
-    current_time_food = None
-    for food in foods:
-        if food.time_food != current_time_food:
-            if buttons_view is not None:
-                widgets.append(buttons_view)
+    for date, foods_in_date in foods_by_date.items():
+        card_content = []
 
-            current_time_food = food.time_food
-            widgets.append(
-                Text(text=f'Дата: {food.datetime.date()}')
-            )
-            widgets.append(
-                Text(text=f'Приём пищи: {current_time_food.name}')
-            )
+        card_content.append(Text(
+            text=f'Дата: {date}',
+            font=Font(
+                size=17,
+                weight=700
+            ),
+            margin=Margin(down=8)
+        ))
 
-        widgets.append(
-            Text(text=f'Название продукта: {food.name}')
-        )
-        widgets.append(
-            Text(text=f'Количество: {food.unit}')
-        )
+        for food in foods_in_date:
+            card_content.append(Text(text=f'Приём пищи: {food.time_food.name.value_get(account)}'))
+            card_content.append(Text(text=f'Название продукта: {food.name.product_name_get(account)}'))
+            card_content.append(Text(text=f'Количество: {food.unit}'))
 
-        buttons_view = View(
-            type=ViewType.horizontal,
-            widgets=[
+            buttons = [
                 Button(
                     type=ButtonType.chip,
                     text='Редактировать',
-                    margin=Margin(horizontal=8, right=6),
                     url=f'/accounts/{account_id}/foods_cards/update/{food.id}',
                 ),
                 Button(
                     type=ButtonType.chip,
                     text='Удалить',
-                    margin=Margin(horizontal=8, right=6),
                     url=f'/accounts/{account_id}/foods_cards/delete/{food.id}',
-                ),
+                )
             ]
-        )
+            button_view = View(
+                widgets=buttons,
+                type=ViewType.horizontal,
+                margin=Margin(horizontal=8, right=6)
+            )
+            card_content.append(button_view)
 
-    if buttons_view:
-        widgets.append(buttons_view)
+        widgets.append(Card(
+            widgets=card_content,
+            margin=Margin(down=12),
+        ))
 
     interface_html = interface.html_get(
         widgets=widgets,
@@ -113,21 +113,18 @@ def foods_get(account_id):
 
     return interface_html
 
+
 @blueprint_foods_cards.route(rule='/create', endpoint='create', methods=['GET', 'POST'])
 @admin_get()
 def foods_create(account_id, admin: Admin):
     if request.method == 'POST':
         unit = request.form.get('unit')
-        name = request.form.get('name')
+        product = request.form.get('product')
+        product = Product().get_by_product(name=product, account=admin.account)
         unit_type = request.form.get('unit_type')
         time_food = request.form.get('time_food')
         food = TimeFood().get_by_food(name=time_food, account=admin.account)
-        article_name = request.form.get('article_name')
-        article = Article().get_by_aricle(name=article_name, account=admin.account)
         account = Account.get_or_none(Account.id == account_id)
-        text = TextDB()
-        text.save()
-        text.default_create(value=name)
 
         selected_dates = []
         for date_checkbox in request.form:
@@ -137,8 +134,8 @@ def foods_create(account_id, admin: Admin):
 
         orders = []
         for date in selected_dates:
-            order = OrderEating(account=account, name=text, time_food=food, unit="{} {}".format(unit, unit_type),
-                                article=article, datetime=date)
+            order = OrderEating(account=account, name=product, time_food=food, unit="{} {}".format(unit, unit_type),
+                                datetime=date)
             orders.append(order)
 
         for order in orders:
@@ -148,14 +145,11 @@ def foods_create(account_id, admin: Admin):
 
     products = Product.select()
     product_options = [product.product_name_get(account=admin.account) for product in products] if products else None
-    articles = Article.select()
-    article_options = [article.article_name_get(account=admin.account) for article in articles] if articles else None
     times_foods = TimeFood.select()
-    food_options = [time_food.food_name_get(account=admin.account) for time_food in times_foods] if times_foods \
-        else None
+    food_options = [time_food.food_name_get(account=admin.account) for time_food in times_foods] if times_foods else None
 
-    if not products or not articles or not times_foods:
-        error_message = "Сначала необходимо создать категорию, статью и приём пищи."
+    if not products or not times_foods:
+        error_message = "Сначала необходимо создать категорию и приём пищи."
         widgets = [
             Text(
                 text=error_message,
@@ -178,7 +172,7 @@ def foods_create(account_id, admin: Admin):
     date_checkboxes = [InputCheckbox(id='date_{}'.format(date.strftime('%d-%m-%Y')), label=date.strftime('%d-%m-%Y'))
                        for date in dates]
 
-    unit_options = ['Граммы', 'Штук']
+    unit_options = ['грамм', 'штук']
 
     widgets = [
         Text(
@@ -214,7 +208,7 @@ def foods_create(account_id, admin: Admin):
                         weight=700,
                     ),
                 ),
-                InputSelect(id='name', options=product_options, selected=product_options),
+                InputSelect(id='product', options=product_options, selected=product_options),
                 Text(
                     text='Единицы измерения',
                     font=Font(
@@ -231,14 +225,6 @@ def foods_create(account_id, admin: Admin):
                     ),
                 ),
                 InputText(id='unit'),
-                Text(
-                    text='Статья',
-                    font=Font(
-                        size=14,
-                        weight=700,
-                    ),
-                ),
-                InputSelect(id='article_name', options=article_options, selected=article_options),
                 InputButton(text='Сохранить', margin=Margin(horizontal=8)),
             ],
         ),

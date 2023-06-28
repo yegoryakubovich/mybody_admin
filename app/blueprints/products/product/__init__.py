@@ -20,8 +20,8 @@ from peewee import DoesNotExist
 
 from app.adecty_design.interface import interface
 from adecty_design.properties import Font, Margin
-from adecty_design.widgets import Text, InputButton, InputText, Form
-from app.database.models import Product, Admin, Account
+from adecty_design.widgets import Text, InputButton, InputText, Form, InputSelect
+from app.database.models import Product, Admin, Account, Article
 from app.decorators.admin_get import admin_get
 from app.database import Text as TextDB
 
@@ -53,6 +53,7 @@ def product_update(product_id: int, admin: Admin):
     account = Account.get_by_id(admin.account_id)
     text_id = product.name.id
     text = TextDB.get_or_none(TextDB.id == text_id)
+    article_options = [article.name.value_get(account) for article in Article.select()]
 
     if request.method == 'POST':
         name = request.form['name']
@@ -64,8 +65,10 @@ def product_update(product_id: int, admin: Admin):
             new_text.default_create(value=name)
 
         return redirect('/products')
+
     text_db = TextDB.get_or_none(TextDB.id == text_id)
     text = text_db.value_get(account)
+
     widgets = [
         Text(
             text='Редактирование продукта',
@@ -79,6 +82,11 @@ def product_update(product_id: int, admin: Admin):
                     font=Font(size=14, weight=700),
                 ),
                 InputText(id='name', value=text),
+                Text(
+                    text='Статья',
+                    font=Font(size=14, weight=700),
+                ),
+                InputSelect(id='article_name', options=article_options),
                 InputButton(text='Сохранить', margin=Margin(top=8)),
             ],
         ),

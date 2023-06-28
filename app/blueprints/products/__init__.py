@@ -19,10 +19,11 @@ from flask import Blueprint, request, redirect
 
 from app.adecty_design.interface import interface
 from adecty_design.properties import Font, Margin, Align, AlignType
-from adecty_design.widgets import Text, Button, ButtonType, Card, View, ViewType, InputButton, InputText, Form
+from adecty_design.widgets import Text, Button, ButtonType, Card, View, ViewType, InputButton, InputText, Form, \
+    InputSelect
 
 from app.blueprints.products.product import blueprint_product
-from app.database.models import Admin, Product
+from app.database.models import Admin, Product, Article
 from app.decorators.admin_get import admin_get
 from app.database import Text as TextDB
 
@@ -61,26 +62,28 @@ def articles_get(admin: Admin):
         )
     ]
 
-    for product in Product.select():
-        product_text = product.name.value_get(admin.account)
+    for products in Product.select():
+        product_text = products.name.value_get(admin.account)
+        article_text = products.article.name.value_get(admin.account)
         new_widget = Card(
             margin=Margin(down=16),
             widgets=[
                 Text(text=f"Название продукта: {product_text}", font=Font(size=16)),
+                Text(text=f"Название статьи: {article_text}", font=Font(size=16)),
                 View(
                     type=ViewType.horizontal,
                     widgets=[
                         Button(
                             type=ButtonType.chip,
-                            text='Редактировать',
+                            text="Редактировать",
                             margin=Margin(horizontal=8, right=6),
-                            url=f'/products/{product.id}/update',
+                            url=f'/products/{products.id}/update',
                         ),
                         Button(
                             type=ButtonType.chip,
                             text='Удалить',
                             margin=Margin(horizontal=8, right=6),
-                            url=f'/products/{product.id}/delete',
+                            url=f'/products/{products.id}/delete',
                         ),
                     ],
                 ),
@@ -97,19 +100,41 @@ def articles_get(admin: Admin):
 
 
 @blueprint_products.route(rule='/create', endpoint='create', methods=['GET', 'POST'])
-@admin_get(not_return=True)
-def articles_create():
+@admin_get()
+def articles_create(admin: Admin):
     if request.method == 'POST':
         name = request.form.get('name')
+        article_name = request.form.get('article_name')
+        article = Article().get_by_aricle(name=article_name, account=admin.account)
 
         text = TextDB()
         text.save()
         text.default_create(value=name)
 
-        product = Product(name=text)
-        product.save()
+        products = Product(name=text, article=article)
+        products.save()
 
-        return redirect(f'/products')
+        return redirect('/products')
+
+    articles = Article.select()
+    article_options = [article.article_name_get(account=admin.account) for article in articles]
+    if not articles:
+        error_message = "Сначала необходимо создать статью."
+        widgets = [
+            Text(
+                text=error_message,
+                font=Font(
+                    size=16,
+                    weight=700,
+                ),
+                margin=Margin(down=16),
+            ),
+        ]
+        interface_html = interface.html_get(
+            widgets=widgets,
+            active='accounts',
+        )
+        return interface_html
 
     widgets = [
         Text(
@@ -130,6 +155,14 @@ def articles_create():
                     ),
                 ),
                 InputText(id='name'),
+                Text(
+                    text='Статья',
+                    font=Font(
+                        size=14,
+                        weight=700,
+                    ),
+                ),
+                InputSelect(id='article_name', options=article_options),
                 InputButton(text='Сохранить', margin=Margin(horizontal=8)),
             ],
         ),
