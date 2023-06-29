@@ -278,6 +278,7 @@ class Product(BaseModel):
             translate = Translate().get_by_value(account=account, value=name, text=product.name)
             if translate:
                 return product
+
     class Meta:
         db_table = 'products'
 
