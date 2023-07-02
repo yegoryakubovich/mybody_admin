@@ -17,7 +17,7 @@
 
 from flask import Blueprint, request, redirect
 
-from app.adecty_design.interface import interface
+from app.adecty_design.interfaces import interface
 from adecty_design.properties import Font, Margin, Align, AlignType
 from adecty_design.widgets import Text, Button, ButtonType, Card, View, ViewType, InputButton, InputText, Form, \
     InputSelect

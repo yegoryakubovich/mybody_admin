@@ -15,20 +15,24 @@
 #
 
 
-from adecty_design.widgets.icon import Icon
+from flask import redirect, request
 
-from app.database import Language, Translate
-
-
-def icon_get(filename: str) -> Icon:
-    return Icon(
-        path=f'app/icons/{filename}'.format(
-            filename=filename,
-        ),
-    )
+from app.adecty_design.widgets.field import Field
 
 
-def create_default_translation(text, value):
-    russian_language = Language.get(name='Русский')
-    translate = Translate.create(language=russian_language, text=text, value=value)
-    translate.save()
+def models_creator_post(fields: list[Field], model, url_back: str = '/'):
+    for field in fields:
+        field_id = field.id
+        field_value = request.form.get(field.id)
+        if not field_value:
+            print('ERROR')
+
+        exec(
+            'model.{field_id} = "{field_value}"'.format(
+                field_id=field_id,
+                field_value=field_value,
+            ),
+        )
+
+    model.save()
+    return redirect(location=url_back), 302

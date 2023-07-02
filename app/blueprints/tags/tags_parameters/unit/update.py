@@ -15,31 +15,23 @@
 #
 
 
-from adecty_design.properties import Font
-from adecty_design.widgets import Text
-from flask import Blueprint, request
-from werkzeug.exceptions import InternalServerError
+from flask import Blueprint
 
-from app.adecty_design.interfaces import interface
+from app.adecty_design.interfaces.tags.tags_parameters.unit.tag_parameter_update import interface_tag_parameter_update
+from app.database.models import TagParameter
 from app.decorators.admin_get import admin_get
 
 
-blueprint_errors = Blueprint('blueprint_errors', __name__)
+blueprint_tag_parameter_update = Blueprint(
+    name='blueprint_tag_parameter_update',
+    import_name=__name__,
+    url_prefix='/update'
+)
 
 
-@blueprint_errors.app_errorhandler(404)
+@blueprint_tag_parameter_update.route(rule='/', endpoint='update', methods=['GET', 'POST'])
 @admin_get(not_return=True)
-def errors_404(error: InternalServerError):
-    if 'favicon.ico' in request.url:
-        return error.get_body()
-
-    widgets = [
-        Text(
-            text='Page not found',
-            font=Font(size=24),
-        ),
-    ]
-    interface_html = interface.html_get(
-        widgets=widgets,
-    )
-    return interface_html
+def tag_parameter_update(tag_parameter_id: int):
+    tag = TagParameter.get_by_id(tag_parameter_id)
+    interface = interface_tag_parameter_update(tag=tag)
+    return interface

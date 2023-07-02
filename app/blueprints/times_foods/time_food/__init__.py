@@ -18,7 +18,7 @@
 from flask import Blueprint, request, redirect
 from peewee import DoesNotExist
 
-from app.adecty_design.interface import interface
+from app.adecty_design.interfaces import interface
 from adecty_design.properties import Font, Margin
 from adecty_design.widgets import Text, InputButton, InputText, Form
 from app.database.models import Admin, Account, TimeFood
@@ -33,7 +33,7 @@ blueprint_time_food = Blueprint(
 )
 
 
-@blueprint_time_food.route(rule='/delete', endpoint='delete', methods=['GET', 'POST'])
+@blueprint_time_food.route(rule='/unit', endpoint='unit', methods=['GET', 'POST'])
 @admin_get(not_return=True)
 def time_food_delete(food_id):
     try:

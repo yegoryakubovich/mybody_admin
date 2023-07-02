@@ -15,8 +15,9 @@
 #
 
 
-from flask import Blueprint, redirect
+from flask import Blueprint
 
+from app.adecty_design.interfaces.mian import interface_main_get
 from app.blueprints.account import blueprint_account
 from app.blueprints.accounts import blueprint_accounts
 from app.blueprints.articles import blueprint_articles
@@ -48,7 +49,8 @@ blueprint_main.register_blueprint(blueprint=blueprint_products)
 blueprint_main.register_blueprint(blueprint=blueprint_times_foods)
 
 
-@blueprint_main.route('/', methods=['GET'])
+@blueprint_main.route(rule='/', endpoint='main_get', methods=('GET', ))
 @admin_get(not_return=True)
-def main():
-    return redirect('/items')
+def main_get():
+    interface = interface_main_get()
+    return interface, 200

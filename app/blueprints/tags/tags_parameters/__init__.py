@@ -16,59 +16,52 @@
 
 
 from flask import Blueprint, request, redirect
-from peewee import DoesNotExist
 
-from app.adecty_design.interface import interface
-from adecty_design.properties import Font, Margin
-from adecty_design.widgets import Text, InputButton, InputText, Form
+from app.adecty_design.interfaces import interface
+from adecty_design.properties import Font, Margin, Align, AlignType
+from adecty_design.widgets import Text, Button, ButtonType, Card, View, ViewType, Form, InputText, InputButton
 
+from app.adecty_design.interfaces.tags.tags_parameters.get import interface_tegs_parameters_get
+from app.blueprints.tags.tags_parameters.unit import blueprint_tag_parameter
 from app.database.models import Admin, TagParameter
 from app.decorators.admin_get import admin_get
 from app.database import Text as TextDB
 
 
-blueprint_tag = Blueprint(
-    name='blueprint_tag',
+blueprint_tags_parameters = Blueprint(
+    name='blueprint_tags_parameters',
     import_name=__name__,
-    url_prefix='/<int:tag_id>/'
+    url_prefix='/tags_parameters'
 )
 
-
-@blueprint_tag.route(rule='/delete', endpoint='delete', methods=['GET', 'POST'])
-@admin_get(not_return=True)
-def tag_delete(tag_id: int):
-    try:
-        tag = TagParameter.get_by_id(tag_id)
-    except DoesNotExist:
-        return redirect('/tags')
-
-    tag.delete_instance()
-    return redirect('/tags')
+blueprint_tags_parameters.register_blueprint(blueprint=blueprint_tag_parameter)
 
 
-@blueprint_tag.route(rule='/edit', endpoint='edit', methods=['GET', 'POST'])
+@blueprint_tags_parameters.route(rule='/', endpoint='get', methods=['GET'])
 @admin_get()
-def tag_edit(admin: Admin, tag_id: int):
-    try:
-        tag = TagParameter.get_by_id(tag_id)
-    except DoesNotExist:
-        return redirect('/tags')
+def tags_parameters_get():
+    interface = interface_tegs_parameters_get()
+    return interface
 
+
+@blueprint_tags_parameters.route(rule='/create', endpoint='create', methods=['GET', 'POST'])
+@admin_get(not_return=True)
+def tags_create():
     if request.method == 'POST':
-        name_value = request.form.get('name_value')
+        tags_value = request.form.get('tags_value')
 
         text = TextDB()
         text.save()
-        text.default_create(value=name_value)
+        text.default_create(value=tags_value)
 
-        tag.name = text
+        tag = TagParameter(name=text)
         tag.save()
 
         return redirect('/tags')
 
     widgets = [
         Text(
-            text='Редактирование тега',
+            text='Создание тега',
             font=Font(
                 size=32,
                 weight=700,
@@ -84,7 +77,7 @@ def tag_edit(admin: Admin, tag_id: int):
                         weight=700,
                     ),
                 ),
-                InputText(id='name_value', value=tag.name.value_get(admin.account)),
+                InputText(id='tags_value'),
                 InputButton(text='Сохранить', margin=Margin(horizontal=8)),
             ],
         ),

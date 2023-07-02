@@ -22,7 +22,7 @@ from adecty_design.widgets import Text, InputButton, Button, ButtonType, Form, I
     ViewType
 from peewee import DoesNotExist
 
-from app.adecty_design.interface import interface
+from app.adecty_design.interfaces import interface
 from app.blueprints.articles.arcicle.chapters import blueprint_chapters
 from app.database.models import Article, Admin, ArticleItem, Account
 from app.database import Text as TextDB
@@ -91,7 +91,7 @@ def articles_update(admin: Admin, article_id: int):
                         Button(
                             type=ButtonType.chip,
                             text='Удалить',
-                            url=f'/articles/{article_id}/{block.id}/delete'
+                            url=f'/articles/{article_id}/{block.id}/unit'
                         )
                     ]
                 )
@@ -141,7 +141,7 @@ def articles_update(admin: Admin, article_id: int):
                         Button(
                             type=ButtonType.chip,
                             text='Удалить',
-                            url=f'/articles/{article_id}/{block.id}/delete'
+                            url=f'/articles/{article_id}/{block.id}/unit'
                         )
                     ]
                 )
@@ -288,7 +288,7 @@ def articles_text_add(article_id: int):
     return interface_html
 
 
-@blueprint_article.route(rule='/delete', endpoint='delete', methods=['GET', 'POST'])
+@blueprint_article.route(rule='/unit', endpoint='unit', methods=['GET', 'POST'])
 @admin_get(not_return=True)
 def article_delete(article_id):
     try:

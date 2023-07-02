@@ -18,7 +18,7 @@
 from adecty_design.properties import Margin, Font
 from adecty_design.widgets import Card, InputText, InputButton, Form, Button, ButtonType, Text
 from flask import Blueprint, request, redirect
-from app.adecty_design.interface import interface
+from app.adecty_design.interfaces import interface
 from app.database import Text as TextDB, Translate, Language
 from app.decorators.admin_get import admin_get
 

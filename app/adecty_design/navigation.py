@@ -16,7 +16,8 @@
 
 
 from adecty_design.widgets.required import Navigation, NavigationItem
-from app.functions.icon_get import icon_get
+
+from app.adecty_design.functions.icon_get import icon_get
 
 
 navigation_main = Navigation(

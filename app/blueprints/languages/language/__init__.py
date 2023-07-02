@@ -15,11 +15,11 @@
 #
 
 
-from adecty_design.properties import Font, Margin
-from adecty_design.widgets import Form, Text, InputText, InputButton
 from flask import Blueprint, redirect, request
 
-from app.adecty_design.interface import interface
+from adecty_design.properties import Font, Margin
+from adecty_design.widgets import Form, Text, InputText, InputButton
+from app.adecty_design.interfaces import interface
 from app.database import Language
 
 
@@ -30,7 +30,7 @@ blueprint_language = Blueprint(
 )
 
 
-@blueprint_language.route('/delete', methods=['GET', 'POST'])
+@blueprint_language.route('/unit', methods=['GET', 'POST'])
 def language_delete(language_id):
     language = Language.get_by_id(language_id)
     language.delete_instance()

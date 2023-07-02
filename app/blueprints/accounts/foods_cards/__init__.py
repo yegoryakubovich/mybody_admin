@@ -21,7 +21,7 @@ from datetime import datetime, timedelta
 from adecty_design.widgets.input import InputCheckbox
 from flask import Blueprint, request, redirect
 
-from app.adecty_design.interface import interface
+from app.adecty_design.interfaces import interface
 from adecty_design.properties import Font, Margin, Align, AlignType
 from adecty_design.widgets import Text, Button, ButtonType, Card, View, ViewType, Form, InputSelect, InputText, \
     InputButton
@@ -104,7 +104,7 @@ def foods_get(account_id, admin: Admin):
             Button(
                 type=ButtonType.chip,
                 text='Удалить',
-                url=f'/accounts/{account_id}/foods_cards/{date}/delete'
+                url=f'/accounts/{account_id}/foods_cards/{date}/unit'
             )
         ]
         button_view = View(

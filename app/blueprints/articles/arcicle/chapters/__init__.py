@@ -19,7 +19,7 @@ from flask import Blueprint, request, redirect
 import json
 from adecty_design.properties import Font, Margin
 from adecty_design.widgets import Text, InputButton, Button, ButtonType, Form, InputText, Card, View, ViewType
-from app.adecty_design.interface import interface
+from app.adecty_design.interfaces import interface
 from app.blueprints.articles.arcicle.chapters.chapter import blueprint_chapter
 from app.database.models import Admin, ArticleItem, Account
 from app.database import Text as TextDB
@@ -198,7 +198,7 @@ def articles_text_edit(admin: Admin, article_id: int, block_id: int):
     return interface_html
 
 
-@blueprint_chapters.route(rule='/delete', endpoint='delete_block', methods=['GET', 'POST'])
+@blueprint_chapters.route(rule='/unit', endpoint='delete_block', methods=['GET', 'POST'])
 @admin_get(not_return=True)
 def delete_block(article_id: int, block_id: int):
     chapter = ArticleItem.get_or_none(ArticleItem.id == block_id)

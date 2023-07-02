@@ -18,7 +18,7 @@
 from flask import Blueprint, request, redirect
 from peewee import DoesNotExist
 
-from app.adecty_design.interface import interface
+from app.adecty_design.interfaces import interface
 from adecty_design.properties import Font, Margin
 from adecty_design.widgets import Text, InputButton, InputText, Form, InputSelect
 from app.database.models import Product, Admin, Account, Article
@@ -33,7 +33,7 @@ blueprint_product = Blueprint(
 )
 
 
-@blueprint_product.route(rule='/delete', endpoint='delete', methods=['GET', 'POST'])
+@blueprint_product.route(rule='/unit', endpoint='unit', methods=['GET', 'POST'])
 @admin_get(not_return=True)
 def product_delete(product_id):
     try:

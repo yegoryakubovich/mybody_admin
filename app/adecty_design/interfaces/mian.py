@@ -17,25 +17,14 @@
 
 from adecty_design.properties import Font
 from adecty_design.widgets import Text
-from flask import Blueprint, request
-from werkzeug.exceptions import InternalServerError
 
-from app.adecty_design.interfaces import interface
-from app.decorators.admin_get import admin_get
+from app.adecty_design.interface import interface
 
 
-blueprint_errors = Blueprint('blueprint_errors', __name__)
-
-
-@blueprint_errors.app_errorhandler(404)
-@admin_get(not_return=True)
-def errors_404(error: InternalServerError):
-    if 'favicon.ico' in request.url:
-        return error.get_body()
-
+def interface_main_get() -> list:
     widgets = [
         Text(
-            text='Page not found',
+            text='Main page',
             font=Font(size=24),
         ),
     ]

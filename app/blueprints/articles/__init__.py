@@ -19,7 +19,7 @@ from flask import Blueprint, request, redirect
 
 from adecty_design.properties import Font, Margin, Align, AlignType
 from adecty_design.widgets import Text, InputButton, Button, ButtonType, Form, InputText, Card, View, ViewType
-from app.adecty_design.interface import interface
+from app.adecty_design.interfaces import interface
 from app.blueprints.articles.arcicle import blueprint_article
 from app.database.models import Article, Admin
 from app.database import Text as TextDB

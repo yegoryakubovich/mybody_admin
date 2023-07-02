@@ -20,8 +20,8 @@ from adecty_design.properties import Margin, Font, Align, AlignType
 from adecty_design.widgets import Card, Text, View, ViewType, Button, ButtonType, InputText, InputButton, Form
 from flask import Blueprint, request
 
-from app.adecty_design.interface import interface
-from app.blueprints.languages.entity import blueprint_language
+from app.adecty_design.interfaces import interface
+from app.blueprints.languages.language import blueprint_language
 from app.database import Language
 from app.decorators.admin_get import admin_get
 
