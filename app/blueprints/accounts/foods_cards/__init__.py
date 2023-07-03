@@ -21,11 +21,12 @@ from datetime import datetime, timedelta
 from adecty_design.widgets.input import InputCheckbox
 from flask import Blueprint, request, redirect
 
-from app.adecty_design.interfaces import interface
+
 from adecty_design.properties import Font, Margin, Align, AlignType
 from adecty_design.widgets import Text, Button, ButtonType, Card, View, ViewType, Form, InputSelect, InputText, \
     InputButton
 
+from app.adecty_design.interface import interface
 from app.blueprints.accounts.foods_cards.food_card import blueprint_food_card
 from app.database.models import OrderEating, Product, Account, Admin, TimeFood
 from app.decorators.admin_get import admin_get
@@ -132,7 +133,7 @@ def foods_get(account_id, admin: Admin):
 def foods_create(account_id, admin: Admin):
     if request.method == 'POST':
         unit = request.form.get('unit')
-        product = request.form.get('product')
+        product = request.form.get('products')
         product = Product().get_by_product(name=product, account=admin.account)
         unit_type = request.form.get('unit_type')
         time_food = request.form.get('time_food')
@@ -222,7 +223,7 @@ def foods_create(account_id, admin: Admin):
                         weight=700,
                     ),
                 ),
-                InputSelect(id='product', options=product_options, selected=product_options),
+                InputSelect(id='products', options=product_options, selected=product_options),
                 Text(
                     text='Единицы измерения',
                     font=Font(

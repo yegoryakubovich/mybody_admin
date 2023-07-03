@@ -20,11 +20,11 @@ from app.adecty_design.widgets.action import Action
 from app.adecty_design.widgets.header import header_get
 from app.adecty_design.widgets.models_viewer_get import models_viewer_get
 from app.adecty_design.widgets.unit import Unit
-from app.database import TagParameter, Admin
+from app.database import TagParameter
 
 
-def interface_tegs_parameters_get(admin: Admin) -> str:
-    header = header_get(text='Теги вопросов к анкете', create_url='/tegs_parameter/create')
+def interface_tags_parameters_get() -> str:
+    header = header_get(text='Теги вопросов к анкете', create_url='/tags_parameter/create')
 
     widgets = [
         header,
@@ -38,20 +38,20 @@ def interface_tegs_parameters_get(admin: Admin) -> str:
                     name=tag_parameter.name,
                 ),
                 parameters={
-                    'Название': tag_parameter.name.value_get(admin.account),
+                    'Название': tag_parameter.name,
                 },
                 actions=[
                     Action(
                         name='Редактировать',
                         icon='update.svg',
-                        url='/tag_parameter/{id}/update'.format(
+                        url='/tag_parameters/{id}/update'.format(
                             id=tag_parameter.id,
                         ),
                     ),
                     Action(
                         name='Удалить',
                         icon='delete.svg',
-                        url='/tag_parameter/{id}/delete'.format(
+                        url='/tag_parameters/{id}/delete'.format(
                             id=tag_parameter.id,
                         ),
                     ),
@@ -63,6 +63,6 @@ def interface_tegs_parameters_get(admin: Admin) -> str:
 
     interface_html = interface.html_get(
         widgets=widgets,
-        active='tegs',
+        active='tags',
     )
     return interface_html

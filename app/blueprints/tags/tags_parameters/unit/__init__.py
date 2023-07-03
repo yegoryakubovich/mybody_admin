@@ -20,13 +20,14 @@ from flask import Blueprint
 from app.blueprints.tags.tags_parameters.unit.delete import blueprint_tag_parameter_delete
 from app.blueprints.tags.tags_parameters.unit.update import blueprint_tag_parameter_update
 
-blueprint_tags_parameters = Blueprint(
-    name='blueprint_tags_parameters',
+
+blueprint_tag_parameter = Blueprint(
+    name='blueprint_tag_parameter',
     import_name=__name__,
-    url_prefix='/<int:tags_parameters>',
+    url_prefix='/<int:tag_parameter>',
 )
 
-blueprint_tags_parameters.register_blueprint(blueprint=blueprint_tag_parameter_update)
-blueprint_tags_parameters.register_blueprint(blueprint=blueprint_tag_parameter_delete)
+blueprint_tag_parameter.register_blueprint(blueprint=blueprint_tag_parameter_update)
+blueprint_tag_parameter.register_blueprint(blueprint=blueprint_tag_parameter_delete)
 
 

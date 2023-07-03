@@ -17,11 +17,10 @@
 
 from flask import Blueprint, request, redirect
 
-from app.adecty_design.interfaces import interface
+from app.adecty_design.interface import interface
 from adecty_design.properties import Font, Margin, Align, AlignType
 from adecty_design.widgets import Text, Button, ButtonType, Card, View, ViewType, InputButton, InputText, Form
 
-from app.blueprints.products.product import blueprint_product
 from app.blueprints.times_foods.time_food import blueprint_time_food
 from app.database.models import Admin, TimeFood
 from app.decorators.admin_get import admin_get

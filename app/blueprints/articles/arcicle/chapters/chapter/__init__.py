@@ -21,7 +21,7 @@ from flask import Blueprint, redirect, request
 
 from adecty_design.properties import Font, Margin
 from adecty_design.widgets import Text, Form, InputText, InputButton
-from app.adecty_design.interfaces import interface
+from app.adecty_design.interface import interface
 from app.database.models import Admin, ArticleItem, Account
 from app.database import Text as TextDB
 from app.decorators.admin_get import admin_get

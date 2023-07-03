@@ -20,7 +20,7 @@ from adecty_design.widgets import Text
 from flask import Blueprint, request
 from werkzeug.exceptions import InternalServerError
 
-from app.adecty_design.interfaces import interface
+from app.adecty_design.interface import interface
 from app.decorators.admin_get import admin_get
 
 

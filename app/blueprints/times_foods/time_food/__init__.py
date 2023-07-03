@@ -18,7 +18,7 @@
 from flask import Blueprint, request, redirect
 from peewee import DoesNotExist
 
-from app.adecty_design.interfaces import interface
+from app.adecty_design.interface import interface
 from adecty_design.properties import Font, Margin
 from adecty_design.widgets import Text, InputButton, InputText, Form
 from app.database.models import Admin, Account, TimeFood

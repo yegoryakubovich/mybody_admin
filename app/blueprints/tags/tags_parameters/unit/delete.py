@@ -23,7 +23,7 @@ from app.decorators.admin_get import admin_get
 
 
 blueprint_tag_parameter_delete = Blueprint(
-    name='blueprint_tag_delete',
+    name='blueprint_tag_parameter_delete',
     import_name=__name__,
     url_prefix='/delete'
 )

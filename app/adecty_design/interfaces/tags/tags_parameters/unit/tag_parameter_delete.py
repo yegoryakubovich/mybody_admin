@@ -43,6 +43,6 @@ def interface_tag_parameter_delete(tag: TagParameter):
 
     interface_html = interface.html_get(
         widgets=widgets,
-        active='tegs',
+        active='tags',
     )
     return interface_html, 200

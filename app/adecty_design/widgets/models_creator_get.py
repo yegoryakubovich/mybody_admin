@@ -29,7 +29,7 @@ def models_creator_get(fields: list):
         form_widgets += field.widgets_get()
 
     form_widgets += [
-        InputButton(text='Create', margin=Margin(top=12)),
+        InputButton(text='Сохранить', margin=Margin(top=12)),
     ]
 
     widgets = [

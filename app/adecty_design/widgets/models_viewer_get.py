@@ -32,7 +32,7 @@ def models_viewer_get(type: str = ModelsViewerTypes.cards, units: list[Unit] = N
     if not units:
         widgets += [
             Text(
-                text='Selected models do not exist',
+                text='У вас нет готовых моделей',
                 font=Font(size=18),
                 margin=Margin(horizontal=12),
             ),

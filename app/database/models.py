@@ -265,7 +265,7 @@ class TimeFood(BaseModel):
 class Product(BaseModel):
     id = PrimaryKeyField()
     name = ForeignKeyField(Text, to_field='id')
-    article = ForeignKeyField(Article, to_field='id')
+    article = ForeignKeyField(Article, to_field='id', null=True)
 
     def product_name_get(self, account: Account):
         translate = Translate.get_or_none((Translate.language == account.language) & (Translate.text == self.name))

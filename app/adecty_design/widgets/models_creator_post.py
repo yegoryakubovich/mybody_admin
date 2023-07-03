@@ -18,6 +18,7 @@
 from flask import redirect, request
 
 from app.adecty_design.widgets.field import Field
+from app.database import Text
 
 
 def models_creator_post(fields: list[Field], model, url_back: str = '/'):
@@ -26,6 +27,12 @@ def models_creator_post(fields: list[Field], model, url_back: str = '/'):
         field_value = request.form.get(field.id)
         if not field_value:
             print('ERROR')
+
+        if field_id == 'name':
+            text = Text()
+            text.save()
+            text.default_create(value=field_value)
+            field_value = text.id
 
         exec(
             'model.{field_id} = "{field_value}"'.format(

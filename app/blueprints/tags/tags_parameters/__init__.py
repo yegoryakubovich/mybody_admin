@@ -15,18 +15,11 @@
 #
 
 
-from flask import Blueprint, request, redirect
+from flask import Blueprint
 
-from app.adecty_design.interfaces import interface
-from adecty_design.properties import Font, Margin, Align, AlignType
-from adecty_design.widgets import Text, Button, ButtonType, Card, View, ViewType, Form, InputText, InputButton
-
-from app.adecty_design.interfaces.tags.tags_parameters.get import interface_tegs_parameters_get
+from app.blueprints.tags.tags_parameters.create import blueprint_tags_parameters_create
+from app.blueprints.tags.tags_parameters.get import blueprint_tags_parameters_get
 from app.blueprints.tags.tags_parameters.unit import blueprint_tag_parameter
-from app.database.models import Admin, TagParameter
-from app.decorators.admin_get import admin_get
-from app.database import Text as TextDB
-
 
 blueprint_tags_parameters = Blueprint(
     name='blueprint_tags_parameters',
@@ -34,57 +27,8 @@ blueprint_tags_parameters = Blueprint(
     url_prefix='/tags_parameters'
 )
 
+
+blueprint_tags_parameters.register_blueprint(blueprint=blueprint_tags_parameters_get)
+blueprint_tags_parameters.register_blueprint(blueprint=blueprint_tags_parameters_create)
 blueprint_tags_parameters.register_blueprint(blueprint=blueprint_tag_parameter)
 
-
-@blueprint_tags_parameters.route(rule='/', endpoint='get', methods=['GET'])
-@admin_get()
-def tags_parameters_get():
-    interface = interface_tegs_parameters_get()
-    return interface
-
-
-@blueprint_tags_parameters.route(rule='/create', endpoint='create', methods=['GET', 'POST'])
-@admin_get(not_return=True)
-def tags_create():
-    if request.method == 'POST':
-        tags_value = request.form.get('tags_value')
-
-        text = TextDB()
-        text.save()
-        text.default_create(value=tags_value)
-
-        tag = TagParameter(name=text)
-        tag.save()
-
-        return redirect('/tags')
-
-    widgets = [
-        Text(
-            text='Создание тега',
-            font=Font(
-                size=32,
-                weight=700,
-            ),
-            margin=Margin(down=16),
-        ),
-        Form(
-            widgets=[
-                Text(
-                    text='Название',
-                    font=Font(
-                        size=14,
-                        weight=700,
-                    ),
-                ),
-                InputText(id='tags_value'),
-                InputButton(text='Сохранить', margin=Margin(horizontal=8)),
-            ],
-        ),
-    ]
-
-    interface_html = interface.html_get(
-        widgets=widgets,
-        active='tags',
-    )
-    return interface_html

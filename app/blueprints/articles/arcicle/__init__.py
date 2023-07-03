@@ -22,7 +22,7 @@ from adecty_design.widgets import Text, InputButton, Button, ButtonType, Form, I
     ViewType
 from peewee import DoesNotExist
 
-from app.adecty_design.interfaces import interface
+from app.adecty_design.interface import interface
 from app.blueprints.articles.arcicle.chapters import blueprint_chapters
 from app.database.models import Article, Admin, ArticleItem, Account
 from app.database import Text as TextDB

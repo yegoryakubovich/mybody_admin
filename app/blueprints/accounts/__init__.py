@@ -17,10 +17,11 @@
 
 from flask import Blueprint
 
-from app.adecty_design.interfaces import interface
+
 from adecty_design.properties import Font, Margin, Align, AlignType
 from adecty_design.widgets import Text, Button, ButtonType, Card, View, ViewType
 
+from app.adecty_design.interface import interface
 from app.blueprints.accounts.foods_cards import blueprint_foods_cards
 from app.blueprints.accounts.trainings_cards import blueprint_trainings_cards
 from app.database.models import Account, AccountParameter

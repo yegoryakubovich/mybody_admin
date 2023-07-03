@@ -50,7 +50,7 @@ def header_get(text: str, url_back: str = None, create_url: str = None):
         header_widgets += [
             Button(
                 type=ButtonType.chip,
-                text='Create new',
+                text='Создать',
                 url=create_url,
                 icon=icon_get(filename='create.svg', color=colors.text),
             ),

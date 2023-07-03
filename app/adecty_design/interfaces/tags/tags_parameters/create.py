@@ -21,25 +21,23 @@ from app.adecty_design.interface import interface
 from app.adecty_design.widgets.header import header_get
 from app.adecty_design.widgets.models_creator_get import models_creator_get, Field
 from app.adecty_design.widgets.models_creator_post import models_creator_post
-from app.database.models import Country
+from app.database.models import TagParameter
 
-
-URL_BACK = '/countries/'
+URL_BACK = '/tags_parameters/'
 FIELDS = [
-    Field(id='name', name='Country name'),
-    Field(id='icon', name='Country flag'),
+    Field(id='name', name='Название тега'),
 ]
 
 
-def interface_countries_create():
+def interface_tags_parameters_create():
     if request.method == 'POST':
         return models_creator_post(
             fields=FIELDS,
-            model=Country(),
+            model=TagParameter(),
             url_back=URL_BACK,
         )
 
-    header = header_get(text='Create country', url_back=URL_BACK)
+    header = header_get(text='Создать', url_back=URL_BACK)
     widgets = [
         header,
     ]
@@ -50,6 +48,6 @@ def interface_countries_create():
 
     interface_html = interface.html_get(
         widgets=widgets,
-        active='countries',
+        active='tags',
     )
     return interface_html, 200

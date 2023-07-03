@@ -36,7 +36,7 @@ def model_updator_get(fields: list[Field], model: Model):
         )
 
     form_widgets += [
-        InputButton(text='Update', margin=Margin(top=12)),
+        InputButton(text='Сохранить', margin=Margin(top=12)),
     ]
 
     widgets = [
